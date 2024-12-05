@@ -16,7 +16,8 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     fun fetchWeather(latitude: Float, longitude: Float) {
         viewModelScope.launch {
             try {
-                val response = repository.fetchWeatherData(latitude, longitude)
+                // Call the correct repository method
+                val response = repository.getWeather(latitude.toDouble(), longitude.toDouble())
                 _weatherData.value = response
             } catch (e: Exception) {
                 // Handle errors
@@ -25,3 +26,4 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
         }
     }
 }
+

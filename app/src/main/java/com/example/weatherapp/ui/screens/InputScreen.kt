@@ -1,84 +1,84 @@
 package com.example.weatherapp.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.example.weatherapp.viewmodel.WeatherViewModel
 
 @Composable
 fun InputScreen(
-    onNavigateToToday: () -> Unit,
-    onNavigateToWeekly: () -> Unit
+    weatherViewModel: WeatherViewModel, // Inject the shared WeatherViewModel
+    onNavigateToToday: () -> Unit,      // Navigate to the Today screen
+    onNavigateToWeekly: () -> Unit     // Navigate to the Weekly screen
 ) {
-    // State variables to hold the latitude and longitude inputs
-    var latitude by remember { mutableStateOf(TextFieldValue("")) }
-    var longitude by remember { mutableStateOf(TextFieldValue("")) }
+    var latitude by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Input field for latitude
-        TextField(
+        Text(text = "Enter Location", style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
             value = latitude,
-            onValueChange = { newValue -> latitude = newValue },
-            label = { Text("Enter Latitude") },
-            placeholder = { Text("e.g., 37.7749") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Input field for longitude
-        TextField(
-            value = longitude,
-            onValueChange = { newValue -> longitude = newValue },
-            label = { Text("Enter Longitude") },
-            placeholder = { Text("e.g., -122.4194") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Navigation Buttons
-        Row(
+            onValueChange = { latitude = it },
+            label = { Text("Latitude") },
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = {
-                    // Validate inputs and navigate to Today's weather
-                    if (isValidCoordinate(latitude.text) && isValidCoordinate(longitude.text)) {
-                        onNavigateToToday()
-                    } else {
-                        // Show error (can use a Snackbar or other UI element)
-                    }
-                },
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
-            ) {
-                Text("Today's Weather")
-            }
+            singleLine = true
+        )
 
-            Button(
-                onClick = {
-                    // Validate inputs and navigate to Weekly weather
-                    if (isValidCoordinate(latitude.text) && isValidCoordinate(longitude.text)) {
-                        onNavigateToWeekly()
-                    } else {
-                        // Show error
-                    }
-                },
-                modifier = Modifier.weight(1f).padding(start = 8.dp)
-            ) {
-                Text("Weekly Weather")
-            }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = { longitude = it },
+            label = { Text("Longitude") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                // Trigger WeatherViewModel to fetch data
+                val lat = latitude.toDoubleOrNull()
+                val lon = longitude.toDoubleOrNull()
+
+                if (lat != null && lon != null) {
+                    weatherViewModel.fetchWeather(lat.toFloat(), lon.toFloat()) // Convert Double to Float
+                    onNavigateToToday() // Navigate to Today screen
+                } else {
+                    // Handle invalid input (optional: show error message)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = latitude.isNotBlank() && longitude.isNotBlank()
+        ) {
+            Text("Show Today's Weather")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = {
+                // Navigate directly to Weekly Screen
+                onNavigateToWeekly()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Show Weekly Weather")
         }
     }
-}
-
-// Helper function to validate coordinates
-fun isValidCoordinate(input: String): Boolean {
-    return input.toFloatOrNull() != null
 }

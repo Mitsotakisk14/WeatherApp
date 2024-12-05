@@ -1,17 +1,19 @@
 package com.example.weatherapp.model
 
 data class WeatherResponse(
-    val hourly: HourlyWeatherData,
-    val daily: DailyWeatherData
+    val hourlyWeather: List<HourlyWeather>, // Correctly maps to hourly weather items
+    val dailyWeather: List<DailyWeather>   // Correctly maps to daily weather items
 )
 
-data class HourlyWeatherData(
-    val time: List<String>,
-    val temperature_2m: List<Float>
+data class HourlyWeather(
+    val time: String,
+    val temperature: Float
 )
 
-data class DailyWeatherData(
-    val time: List<String>,
-    val temperature_2m_max: List<Float>,
-    val temperature_2m_min: List<Float>
+data class DailyWeather(
+    val date: String,
+    val minTemperature: Float,
+    val maxTemperature: Float
 )
+
+

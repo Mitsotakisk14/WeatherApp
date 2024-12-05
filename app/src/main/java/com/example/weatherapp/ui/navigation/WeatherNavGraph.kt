@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import com.example.weatherapp.ui.screens.InputScreen
 import com.example.weatherapp.ui.screens.TodayScreen
 import com.example.weatherapp.ui.screens.WeeklyScreen
+import com.example.weatherapp.viewmodel.WeatherViewModel
 
-// Define the navigation routes
 object WeatherRoutes {
     const val Input = "input"
     const val Today = "today"
@@ -16,28 +16,34 @@ object WeatherRoutes {
 }
 
 @Composable
-fun WeatherNavGraph(navController: NavHostController) {
-    // Define the navigation flow
+fun WeatherNavGraph(
+    navController: NavHostController,
+    weatherViewModel: WeatherViewModel
+) {
     NavHost(
         navController = navController,
-        startDestination = WeatherRoutes.Input // Set the Input screen as the start
+        startDestination = WeatherRoutes.Input
     ) {
-        // Route for the Input screen
+        // Input Screen Route
         composable(route = WeatherRoutes.Input) {
             InputScreen(
+                weatherViewModel = weatherViewModel,
                 onNavigateToToday = { navController.navigate(WeatherRoutes.Today) },
                 onNavigateToWeekly = { navController.navigate(WeatherRoutes.Weekly) }
             )
         }
 
-        // Route for Today's weather screen
+        // Today's Weather Screen Route
         composable(route = WeatherRoutes.Today) {
-            TodayScreen(navController = navController)
+            TodayScreen(
+                weatherViewModel = weatherViewModel,
+                onNavigateToWeekly = { navController.navigate(WeatherRoutes.Weekly) }
+            )
         }
 
-        // Route for Weekly weather screen
+        // Weekly Weather Screen Route
         composable(route = WeatherRoutes.Weekly) {
-            WeeklyScreen(navController = navController)
+            WeeklyScreen(weatherViewModel = weatherViewModel)
         }
     }
 }
