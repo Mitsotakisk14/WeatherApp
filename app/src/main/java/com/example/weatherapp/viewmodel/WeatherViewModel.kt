@@ -13,17 +13,34 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     private val _weatherData = MutableStateFlow<WeatherResponse?>(null)
     val weatherData: StateFlow<WeatherResponse?> get() = _weatherData
 
-    fun fetchWeather(latitude: Float, longitude: Float) {
+    fun fetchWeather(
+        latitude: Float,
+        longitude: Float,
+        hourly: String = "temperature_2m",
+        daily: String = "temperature_2m_max,temperature_2m_min",
+        timezone: String = "auto",
+        forecastDays: Int = 7,
+        temperatureUnit: String = "celsius",
+        windSpeedUnit: String = "kmh"
+    ) {
         viewModelScope.launch {
             try {
-                // Call the correct repository method
-                val response = repository.getWeather(latitude.toDouble(), longitude.toDouble())
+                val response = repository.getWeather(
+                    latitude = latitude.toDouble(),
+                    longitude = longitude.toDouble(),
+                    hourly = hourly,
+                    daily = daily,
+                    timezone = timezone,
+                    forecastDays = forecastDays,
+                    temperatureUnit = temperatureUnit,
+                    windSpeedUnit = windSpeedUnit
+                )
                 _weatherData.value = response
             } catch (e: Exception) {
-                // Handle errors
                 e.printStackTrace()
             }
         }
     }
 }
+
 

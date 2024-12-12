@@ -18,6 +18,9 @@ fun InputScreen(
 ) {
     var latitude by remember { mutableStateOf("") }
     var longitude by remember { mutableStateOf("") }
+    var forecastDays by remember { mutableStateOf("7") }
+    var temperatureUnit by remember { mutableStateOf("celsius") }
+    var windSpeedUnit by remember { mutableStateOf("kmh") }
 
     Column(
         modifier = Modifier
@@ -48,15 +51,52 @@ fun InputScreen(
             singleLine = true
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = forecastDays,
+            onValueChange = { forecastDays = it },
+            label = { Text("Forecast Days (1-16)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = temperatureUnit,
+            onValueChange = { temperatureUnit = it },
+            label = { Text("Temperature Unit (celsius/fahrenheit)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = windSpeedUnit,
+            onValueChange = { windSpeedUnit = it },
+            label = { Text("Wind Speed Unit (kmh/ms/mph/kn)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
                 val lat = latitude.toDoubleOrNull()
                 val lon = longitude.toDoubleOrNull()
+                val days = forecastDays.toIntOrNull()
 
-                if (lat != null && lon != null) {
-                    weatherViewModel.fetchWeather(lat.toFloat(), lon.toFloat())
+                if (lat != null && lon != null && days != null && days in 1..16) {
+                    weatherViewModel.fetchWeather(
+                        latitude = lat.toFloat(),
+                        longitude = lon.toFloat(),
+                        forecastDays = days,
+                        temperatureUnit = temperatureUnit,
+                        windSpeedUnit = windSpeedUnit
+                    )
                     onNavigateToToday()
                 }
             },

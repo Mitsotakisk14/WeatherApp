@@ -3,6 +3,7 @@ package com.example.weatherapp.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,11 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.viewmodel.WeatherViewModel
-import com.example.weatherapp.model.DailyWeather
 
 @Composable
 fun WeeklyScreen(
-    weatherViewModel: WeatherViewModel
+    weatherViewModel: WeatherViewModel,
+    onNavigateToToday: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     val weatherData by weatherViewModel.weatherData.collectAsState(initial = null)
 
@@ -29,10 +31,17 @@ fun WeeklyScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        weatherData?.dailyWeather?.let { dailyWeather ->
+        weatherData?.daily?.let { dailyData ->
+            val dates = dailyData.time ?: listOf()
+            val maxTemps = dailyData.temperature_2m_max ?: listOf()
+            val minTemps = dailyData.temperature_2m_min ?: listOf()
+
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(dailyWeather) { daily ->
-                    DailyWeatherItem(daily ?: DailyWeather("Unknown", 0.0f, 0.0f))
+                items(dates) { date ->
+                    val index = dates.indexOf(date)
+                    val maxTemp = maxTemps.getOrNull(index) ?: 0f
+                    val minTemp = minTemps.getOrNull(index) ?: 0f
+                    DailyWeatherItem(date, maxTemp, minTemp)
                 }
             }
         } ?: Text(
@@ -40,19 +49,37 @@ fun WeeklyScreen(
             style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onNavigateToToday,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Back to Today")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onNavigateToHome,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Back to Home")
+        }
     }
 }
 
 @Composable
-fun DailyWeatherItem(daily: DailyWeather) {
+fun DailyWeatherItem(date: String, maxTemp: Float, minTemp: Float) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = daily.date ?: "Unknown Date")
-        Text(text = "${daily.minTemperature ?: 0.0f}°C / ${daily.maxTemperature ?: 0.0f}°C")
+        Text(text = date)
+        Text(text = "${minTemp}°C / ${maxTemp}°C")
     }
 }
 

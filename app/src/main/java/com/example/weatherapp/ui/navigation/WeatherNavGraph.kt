@@ -35,12 +35,18 @@ fun WeatherNavGraph(
         composable(route = WeatherRoutes.Today) {
             TodayScreen(
                 weatherViewModel = weatherViewModel,
-                onNavigateToWeekly = { navController.navigate(WeatherRoutes.Weekly) }
+                onNavigateToWeekly = { navController.navigate(WeatherRoutes.Weekly) },
+                onNavigateToHome = { navController.popBackStack(WeatherRoutes.Input, inclusive = false) }
             )
         }
 
         composable(route = WeatherRoutes.Weekly) {
-            WeeklyScreen(weatherViewModel = weatherViewModel)
+            WeeklyScreen(
+                weatherViewModel = weatherViewModel,
+                onNavigateToToday = { navController.popBackStack(WeatherRoutes.Today, inclusive = false) },
+                onNavigateToHome = { navController.popBackStack(WeatherRoutes.Input, inclusive = false) }
+            )
         }
     }
 }
+

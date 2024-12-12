@@ -1,31 +1,38 @@
 package com.example.weatherapp.repository
 
-import com.example.weatherapp.model.DailyWeather
-import com.example.weatherapp.model.HourlyWeather
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherApi
 import android.util.Log
 
 class WeatherRepository(private val api: WeatherApi) {
 
-    suspend fun getWeather(latitude: Double, longitude: Double): WeatherResponse {
-        try {
-            val response = api.getWeather(
+    suspend fun getWeather(
+        latitude: Double,
+        longitude: Double,
+        hourly: String = "temperature_2m",
+        daily: String = "temperature_2m_max,temperature_2m_min",
+        timezone: String = "auto",
+        forecastDays: Int = 7,
+        temperatureUnit: String = "celsius",
+        windSpeedUnit: String = "kmh"
+    ): WeatherResponse {
+        return try {
+            api.getWeather(
                 latitude = latitude,
                 longitude = longitude,
-                hourly = "temperature_2m",
-                daily = "temperature_2m_max,temperature_2m_min"
+                hourly = hourly,
+                daily = daily,
+                timezone = timezone,
+                forecastDays = forecastDays,
+                temperatureUnit = temperatureUnit,
+                windSpeedUnit = windSpeedUnit
             )
-
-            val hourlyWeather = response.hourlyWeather ?: emptyList()
-            val dailyWeather = response.dailyWeather ?: emptyList()
-
-            return WeatherResponse(hourlyWeather = hourlyWeather, dailyWeather = dailyWeather)
         } catch (e: Exception) {
             Log.e("WeatherRepository", "Error fetching weather data", e)
-            return WeatherResponse()
+            WeatherResponse() // Return an empty response in case of failure
         }
     }
 }
+
 
 
