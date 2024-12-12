@@ -15,10 +15,14 @@ import com.example.weatherapp.viewmodel.WeatherViewModelFactory
 import com.example.weatherapp.repository.WeatherRepository
 import com.example.weatherapp.network.ApiService
 import com.example.weatherapp.network.WeatherApi
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize ThreeTenABP
+        AndroidThreeTen.init(this)
 
         // Create an instance of WeatherApi using ApiService
         val api = ApiService.createService(WeatherApi::class.java)

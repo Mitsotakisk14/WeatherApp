@@ -14,7 +14,6 @@ class WeatherRepository(private val api: WeatherApi) {
         timezone: String = "auto",
         forecastDays: Int = 7,
         temperatureUnit: String = "celsius",
-        windSpeedUnit: String = "kmh"
     ): WeatherResponse {
         return try {
             api.getWeather(
@@ -25,7 +24,6 @@ class WeatherRepository(private val api: WeatherApi) {
                 timezone = timezone,
                 forecastDays = forecastDays,
                 temperatureUnit = temperatureUnit,
-                windSpeedUnit = windSpeedUnit
             )
         } catch (e: Exception) {
             Log.e("WeatherRepository", "Error fetching weather data", e)

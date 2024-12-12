@@ -21,7 +21,6 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
         timezone: String = "auto",
         forecastDays: Int = 7,
         temperatureUnit: String = "celsius",
-        windSpeedUnit: String = "kmh"
     ) {
         viewModelScope.launch {
             try {
@@ -33,7 +32,6 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
                     timezone = timezone,
                     forecastDays = forecastDays,
                     temperatureUnit = temperatureUnit,
-                    windSpeedUnit = windSpeedUnit
                 )
                 _weatherData.value = response
             } catch (e: Exception) {

@@ -20,7 +20,6 @@ fun InputScreen(
     var longitude by remember { mutableStateOf("") }
     var forecastDays by remember { mutableStateOf("7") }
     var temperatureUnit by remember { mutableStateOf("celsius") }
-    var windSpeedUnit by remember { mutableStateOf("kmh") }
 
     Column(
         modifier = Modifier
@@ -71,17 +70,6 @@ fun InputScreen(
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = windSpeedUnit,
-            onValueChange = { windSpeedUnit = it },
-            label = { Text("Wind Speed Unit (kmh/ms/mph/kn)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -95,7 +83,6 @@ fun InputScreen(
                         longitude = lon.toFloat(),
                         forecastDays = days,
                         temperatureUnit = temperatureUnit,
-                        windSpeedUnit = windSpeedUnit
                     )
                     onNavigateToToday()
                 }

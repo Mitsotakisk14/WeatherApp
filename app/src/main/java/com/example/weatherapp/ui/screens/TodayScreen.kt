@@ -11,6 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.viewmodel.WeatherViewModel
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun TodayScreen(
@@ -32,8 +34,12 @@ fun TodayScreen(
         )
 
         weatherData?.hourly?.let { hourlyData ->
-            val times = hourlyData.time ?: listOf()
-            val temperatures = hourlyData.temperature_2m ?: listOf()
+            // Get the current hour in the same format as the API (e.g., "2024-12-12T14:00")
+            val currentHour = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00"))
+
+            // Filter data starting from the current hour
+            val times = hourlyData.time?.filter { it >= currentHour } ?: listOf()
+            val temperatures = hourlyData.temperature_2m?.takeLast(times.size) ?: listOf()
 
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(times) { time ->
@@ -80,4 +86,5 @@ fun HourlyWeatherItem(time: String, temperature: Float) {
         Text(text = "${temperature}°C")
     }
 }
+
 

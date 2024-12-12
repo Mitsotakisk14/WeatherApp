@@ -14,7 +14,6 @@ interface WeatherApi {
         @Query("timezone") timezone: String = "auto",
         @Query("forecast_days") forecastDays: Int = 7,
         @Query("temperature_unit") temperatureUnit: String = "celsius",
-        @Query("wind_speed_unit") windSpeedUnit: String = "kmh"
     ): WeatherResponse
 }
 
