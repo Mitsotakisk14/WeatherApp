@@ -34,18 +34,24 @@ fun TodayScreen(
         )
 
         weatherData?.hourly?.let { hourlyData ->
-            // Get the current hour in the same format as the API (e.g., "2024-12-12T14:00")
             val currentHour = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00"))
-
-            // Filter data starting from the current hour
             val times = hourlyData.time?.filter { it >= currentHour } ?: listOf()
             val temperatures = hourlyData.temperature_2m?.takeLast(times.size) ?: listOf()
+            val cloudCovers = hourlyData.cloudcover?.takeLast(times.size) ?: listOf()
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(times) { time ->
-                    val index = times.indexOf(time)
-                    val temperature = temperatures.getOrNull(index) ?: 0f
-                    HourlyWeatherItem(time, temperature)
+            if (times.isEmpty()) {
+                Text(
+                    text = "No weather data available for today",
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                )
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(times) { time ->
+                        val index = times.indexOf(time)
+                        val temperature = temperatures.getOrNull(index) ?: 0f
+                        val cloudCoverage = cloudCovers.getOrNull(index) ?: 0f
+                        HourlyWeatherItem(time, temperature, cloudCoverage)
+                    }
                 }
             }
         } ?: Text(
@@ -75,16 +81,22 @@ fun TodayScreen(
 }
 
 @Composable
-fun HourlyWeatherItem(time: String, temperature: Float) {
+fun HourlyWeatherItem(time: String, temperature: Float, cloudCoverage: Float) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = time)
-        Text(text = "${temperature}°C")
+        Column {
+            Text(text = time)
+            Text(text = "${temperature}°C")
+        }
+        CloudCoverageIndicator(cloudCoverage) // Shared function
     }
 }
+
+
+
 
 

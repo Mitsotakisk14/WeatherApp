@@ -9,8 +9,8 @@ interface WeatherApi {
     suspend fun getWeather(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("hourly") hourly: String = "temperature_2m",
-        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min",
+        @Query("hourly") hourly: String = "temperature_2m,cloudcover",
+        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min,cloudcover_mean",
         @Query("timezone") timezone: String = "auto",
         @Query("forecast_days") forecastDays: Int = 7,
         @Query("temperature_unit") temperatureUnit: String = "celsius",

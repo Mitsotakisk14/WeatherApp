@@ -35,13 +35,22 @@ fun WeeklyScreen(
             val dates = dailyData.time ?: listOf()
             val maxTemps = dailyData.temperature_2m_max ?: listOf()
             val minTemps = dailyData.temperature_2m_min ?: listOf()
+            val cloudCovers = dailyData.cloudcover_mean ?: listOf()
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(dates) { date ->
-                    val index = dates.indexOf(date)
-                    val maxTemp = maxTemps.getOrNull(index) ?: 0f
-                    val minTemp = minTemps.getOrNull(index) ?: 0f
-                    DailyWeatherItem(date, maxTemp, minTemp)
+            if (dates.isEmpty()) {
+                Text(
+                    text = "No weekly weather data available",
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                )
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(dates) { date ->
+                        val index = dates.indexOf(date)
+                        val maxTemp = maxTemps.getOrNull(index) ?: 0f
+                        val minTemp = minTemps.getOrNull(index) ?: 0f
+                        val cloudCoverage = cloudCovers.getOrNull(index) ?: 0f
+                        DailyWeatherItem(date, maxTemp, minTemp, cloudCoverage)
+                    }
                 }
             }
         } ?: Text(
@@ -71,17 +80,22 @@ fun WeeklyScreen(
 }
 
 @Composable
-fun DailyWeatherItem(date: String, maxTemp: Float, minTemp: Float) {
+fun DailyWeatherItem(date: String, maxTemp: Float, minTemp: Float, cloudCoverage: Float) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = date)
-        Text(text = "${minTemp}°C / ${maxTemp}°C")
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = date)
+            Text(text = "${minTemp}°C / ${maxTemp}°C")
+        }
+        CloudCoverageIndicator(cloudCoverage) // Shared function
     }
 }
+
+
 
 
 
