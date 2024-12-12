@@ -30,24 +30,20 @@ fun TodayScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        if (weatherData != null) {
-            val hourlyWeather = weatherData!!.hourlyWeather
+        weatherData?.hourlyWeather?.let { hourlyWeather ->
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(hourlyWeather) { hourly ->
-                    HourlyWeatherItem(hourly)
+                    HourlyWeatherItem(hourly ?: HourlyWeather("Unknown", 0.0f))
                 }
             }
-        } else {
-            Text(
-                text = "Loading...",
-                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        } ?: Text(
+            text = "No data available",
+            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Button to navigate to the weekly screen
         androidx.compose.material3.Button(
             onClick = onNavigateToWeekly,
             modifier = Modifier.fillMaxWidth()
@@ -65,7 +61,7 @@ fun HourlyWeatherItem(hourly: HourlyWeather) {
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = hourly.time)
-        Text(text = "${hourly.temperature}°C")
+        Text(text = hourly.time ?: "Unknown Time")
+        Text(text = "${hourly.temperature ?: 0.0f}°C")
     }
 }

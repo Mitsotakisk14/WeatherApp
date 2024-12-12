@@ -12,9 +12,9 @@ import com.example.weatherapp.viewmodel.WeatherViewModel
 
 @Composable
 fun InputScreen(
-    weatherViewModel: WeatherViewModel, // Inject the shared WeatherViewModel
-    onNavigateToToday: () -> Unit,      // Navigate to the Today screen
-    onNavigateToWeekly: () -> Unit     // Navigate to the Weekly screen
+    weatherViewModel: WeatherViewModel,
+    onNavigateToToday: () -> Unit,
+    onNavigateToWeekly: () -> Unit
 ) {
     var latitude by remember { mutableStateOf("") }
     var longitude by remember { mutableStateOf("") }
@@ -52,15 +52,12 @@ fun InputScreen(
 
         Button(
             onClick = {
-                // Trigger WeatherViewModel to fetch data
                 val lat = latitude.toDoubleOrNull()
                 val lon = longitude.toDoubleOrNull()
 
                 if (lat != null && lon != null) {
-                    weatherViewModel.fetchWeather(lat.toFloat(), lon.toFloat()) // Convert Double to Float
-                    onNavigateToToday() // Navigate to Today screen
-                } else {
-                    // Handle invalid input (optional: show error message)
+                    weatherViewModel.fetchWeather(lat.toFloat(), lon.toFloat())
+                    onNavigateToToday()
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -72,10 +69,7 @@ fun InputScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = {
-                // Navigate directly to Weekly Screen
-                onNavigateToWeekly()
-            },
+            onClick = onNavigateToWeekly,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Show Weekly Weather")

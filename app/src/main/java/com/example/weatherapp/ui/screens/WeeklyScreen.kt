@@ -29,20 +29,17 @@ fun WeeklyScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        if (weatherData != null) {
-            val dailyWeather = weatherData!!.dailyWeather
+        weatherData?.dailyWeather?.let { dailyWeather ->
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(dailyWeather) { daily ->
-                    DailyWeatherItem(daily)
+                    DailyWeatherItem(daily ?: DailyWeather("Unknown", 0.0f, 0.0f))
                 }
             }
-        } else {
-            Text(
-                text = "Loading...",
-                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        } ?: Text(
+            text = "No data available",
+            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -54,9 +51,10 @@ fun DailyWeatherItem(daily: DailyWeather) {
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = daily.date)
-        Text(text = "${daily.minTemperature}°C / ${daily.maxTemperature}°C")
+        Text(text = daily.date ?: "Unknown Date")
+        Text(text = "${daily.minTemperature ?: 0.0f}°C / ${daily.maxTemperature ?: 0.0f}°C")
     }
 }
+
 
 

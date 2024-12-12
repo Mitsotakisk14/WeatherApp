@@ -24,7 +24,6 @@ fun WeatherNavGraph(
         navController = navController,
         startDestination = WeatherRoutes.Input
     ) {
-        // Input Screen Route
         composable(route = WeatherRoutes.Input) {
             InputScreen(
                 weatherViewModel = weatherViewModel,
@@ -33,7 +32,6 @@ fun WeatherNavGraph(
             )
         }
 
-        // Today's Weather Screen Route
         composable(route = WeatherRoutes.Today) {
             TodayScreen(
                 weatherViewModel = weatherViewModel,
@@ -41,7 +39,6 @@ fun WeatherNavGraph(
             )
         }
 
-        // Weekly Weather Screen Route
         composable(route = WeatherRoutes.Weekly) {
             WeeklyScreen(weatherViewModel = weatherViewModel)
         }
